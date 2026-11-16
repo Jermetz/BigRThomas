@@ -9,57 +9,94 @@
      x, y = centre; span = wingtip to wingtip in pixels;
      flap = -1 (wings down) to 1 (wings up).
      ========================================================= */
-  function drawEagle(ctx, x, y, span, flap, bank, squash, night) {
+  function drawEagle(ctx, x, y, span, flap, heading, night) {
+    // A bald eagle seen from above, the way you see one circling: broad flat
+    // wings with spread "finger" feathers, white head, yellow beak, white tail.
+    // flap: 0 = wings fully spread (gliding), 1 = pulled in mid-wingbeat.
     var s = span / 2;
-    var feather = night ? '#54443a' : '#2b1b11';
-    var white = night ? '#d9d6cc' : '#f8f6ee';
-    var tipY = (-0.10 - 0.42 * flap) * s;
-    var midY = (-0.24 - 0.2 * flap) * s;
+    var dark = night ? '#3f3027' : '#2a1a10';
+    var mid = night ? '#5e4a3b' : '#4d3322';
+    var white = night ? '#dedbd1' : '#fbfaf4';
+    var reach = 1 - 0.26 * flap;
+    var fingers = [[-0.15, 0.30], [0.05, 0.31], [0.25, 0.30], [0.45, 0.27], [0.65, 0.24], [0.85, 0.20]];
+    var i, side;
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(bank);
-    ctx.scale(squash, 1);
-    for (var side = -1; side <= 1; side += 2) {
+    ctx.rotate(heading);
+
+    ctx.beginPath();                                                 // white tail fan
+    ctx.moveTo(-0.05 * s, 0.15 * s);
+    ctx.lineTo(-0.15 * s, 0.40 * s);
+    ctx.quadraticCurveTo(0, 0.47 * s, 0.15 * s, 0.40 * s);
+    ctx.lineTo(0.05 * s, 0.15 * s);
+    ctx.closePath();
+    ctx.fillStyle = white;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(90,80,60,0.35)';
+    ctx.lineWidth = Math.max(0.5, s * 0.008);
+    for (i = -1; i <= 1; i++) {
+      ctx.beginPath(); ctx.moveTo(i * 0.02 * s, 0.22 * s); ctx.lineTo(i * 0.075 * s, 0.42 * s); ctx.stroke();
+    }
+
+    for (side = -1; side <= 1; side += 2) {
       ctx.save();
-      ctx.scale(side, 1);
-      ctx.beginPath();
-      ctx.moveTo(0.05 * s, -0.06 * s);
-      ctx.quadraticCurveTo(0.5 * s, midY, 1.0 * s, tipY);          // leading edge
-      ctx.lineTo(0.98 * s, tipY + 0.10 * s);                        // wingtip "fingers"
-      ctx.lineTo(0.93 * s, tipY + 0.05 * s);
-      ctx.lineTo(0.91 * s, tipY + 0.15 * s);
-      ctx.lineTo(0.86 * s, tipY + 0.08 * s);
-      ctx.lineTo(0.83 * s, tipY + 0.19 * s);
-      ctx.lineTo(0.78 * s, tipY + 0.11 * s);
-      ctx.quadraticCurveTo(0.42 * s, (0.17 - 0.14 * flap) * s, 0.05 * s, 0.12 * s); // trailing edge
+      ctx.scale(side * reach, 1);
+      ctx.fillStyle = dark;
+      for (i = 0; i < fingers.length; i++) {                         // primary "finger" feathers
+        var len = fingers[i][1] * s;
+        ctx.save();
+        ctx.translate((0.69 + i * 0.006) * s, (-0.08 + i * 0.034) * s);
+        ctx.rotate(fingers[i][0] + flap * 0.25);
+        ctx.beginPath();
+        ctx.ellipse(len / 2, 0, len / 2, 0.043 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.beginPath();                                               // the broad wing
+      ctx.moveTo(0.04 * s, -0.13 * s);
+      ctx.quadraticCurveTo(0.40 * s, -0.21 * s, 0.76 * s, -0.11 * s);
+      ctx.lineTo(0.80 * s, 0.13 * s);
+      ctx.quadraticCurveTo(0.60 * s, 0.28 * s, 0.40 * s, 0.25 * s);
+      ctx.quadraticCurveTo(0.20 * s, 0.27 * s, 0.04 * s, 0.18 * s);
       ctx.closePath();
-      ctx.fillStyle = feather;
       ctx.fill();
+      ctx.beginPath();                                               // lighter shoulder feathers
+      ctx.moveTo(0.04 * s, -0.13 * s);
+      ctx.quadraticCurveTo(0.40 * s, -0.21 * s, 0.76 * s, -0.11 * s);
+      ctx.lineTo(0.74 * s, -0.02 * s);
+      ctx.quadraticCurveTo(0.40 * s, -0.08 * s, 0.04 * s, 0.0);
+      ctx.closePath();
+      ctx.fillStyle = mid;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.28)';                          // flight feather lines
+      ctx.lineWidth = Math.max(0.5, s * 0.008);
+      for (i = 0; i < 7; i++) {
+        ctx.beginPath();
+        ctx.moveTo((0.14 + i * 0.09) * s, -0.02 * s);
+        ctx.lineTo((0.15 + i * 0.095) * s, 0.235 * s);
+        ctx.stroke();
+      }
       ctx.restore();
     }
-    ctx.beginPath();                                                 // white tail
-    ctx.moveTo(-0.055 * s, 0.14 * s);
-    ctx.lineTo(0.055 * s, 0.14 * s);
-    ctx.lineTo(0.11 * s, 0.31 * s);
-    ctx.lineTo(-0.11 * s, 0.31 * s);
-    ctx.closePath();
-    ctx.fillStyle = white;
-    ctx.fill();
+
     ctx.beginPath();                                                 // body
-    ctx.ellipse(0, 0.04 * s, 0.075 * s, 0.15 * s, 0, 0, Math.PI * 2);
-    ctx.fillStyle = feather;
+    ctx.ellipse(0, 0.04 * s, 0.085 * s, 0.2 * s, 0, 0, Math.PI * 2);
+    ctx.fillStyle = dark;
     ctx.fill();
-    ctx.beginPath();                                                 // white head
-    ctx.arc(0, -0.13 * s, 0.062 * s, 0, Math.PI * 2);
+    ctx.beginPath();                                                 // white head and neck
+    ctx.ellipse(0, -0.185 * s, 0.07 * s, 0.092 * s, 0, 0, Math.PI * 2);
     ctx.fillStyle = white;
     ctx.fill();
-    ctx.beginPath();                                                 // beak
-    ctx.moveTo(-0.022 * s, -0.175 * s);
-    ctx.lineTo(0.022 * s, -0.175 * s);
-    ctx.lineTo(0, -0.225 * s);
-    ctx.closePath();
-    ctx.fillStyle = '#e2b653';
+    ctx.beginPath();                                                 // hooked yellow beak
+    ctx.moveTo(-0.03 * s, -0.25 * s);
+    ctx.lineTo(0.03 * s, -0.25 * s);
+    ctx.quadraticCurveTo(0.024 * s, -0.32 * s, 0, -0.34 * s);
+    ctx.quadraticCurveTo(-0.024 * s, -0.32 * s, -0.03 * s, -0.25 * s);
+    ctx.fillStyle = '#f2b01e';
     ctx.fill();
+    ctx.fillStyle = '#1a120c';                                       // eyes
+    ctx.beginPath(); ctx.arc(-0.034 * s, -0.215 * s, 0.011 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0.034 * s, -0.215 * s, 0.011 * s, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
 
@@ -196,12 +233,14 @@
       var t = (now - start) / 1000;
       ctx.drawImage(back, 0, 0, W, H);
       var a = t * 0.22;                                                // slow circle
-      var x = W * 0.5 + Math.cos(a) * W * 0.3;
-      var y = H * 0.17 + Math.sin(a) * H * 0.045 + Math.sin(t * 0.7) * 3;
-      var span = Math.min(170, Math.max(96, W * 0.3)) * (1 + 0.22 * Math.sin(a));
-      var beat = t % 11;                                               // mostly gliding, a few wingbeats
-      var flap = beat < 2.1 ? Math.sin(beat / 2.1 * Math.PI * 6) * 0.75 : 0.12 + Math.sin(t * 1.1) * 0.05;
-      drawEagle(ctx, x, y, span, flap, -Math.sin(a) * 0.28, 1 - 0.3 * Math.abs(Math.sin(a)), sun && sun.elevation < -4);
+      var rx = W * 0.27, ry = H * 0.075;
+      var x = W * 0.5 + Math.cos(a) * rx;
+      var y = H * 0.18 + Math.sin(a) * ry;
+      var heading = Math.atan2(Math.cos(a) * ry, -Math.sin(a) * rx) + Math.PI / 2;   // face the way it is flying
+      var span = Math.min(230, Math.max(150, W * 0.42)) * (1 + 0.14 * Math.sin(a));
+      var beat = t % 12;                                               // mostly gliding, a few slow wingbeats
+      var flap = beat < 2.4 ? 0.5 - 0.5 * Math.cos(beat / 2.4 * Math.PI * 6) : 0.04 + Math.sin(t * 0.9) * 0.03;
+      drawEagle(ctx, x, y, span, flap, heading, sun && sun.elevation < -4);
     }
 
     function loop(now) {
@@ -302,8 +341,8 @@
       ctx.clearRect(0, 0, W, H);
       if (p >= 1 || box.hidden) return;
       var ease = p * p * (3 - 2 * p);
-      drawEagle(ctx, -W * 0.4 + ease * W * 1.8, H * 0.8 - ease * H * 0.75, Math.min(W * 0.7, 420),
-        Math.sin(p * Math.PI * 9) * 0.85, -0.3, 1, false);
+      drawEagle(ctx, -W * 0.4 + ease * W * 1.8, H * 0.85 - ease * H * 0.8, Math.min(W * 0.8, 460),
+        0.5 - 0.5 * Math.cos(p * Math.PI * 10), Math.atan2(-H * 0.8, W * 1.8) + Math.PI / 2, false);
       requestAnimationFrame(fly);
     })(t0);
   }

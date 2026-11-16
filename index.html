@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
@@ -25,13 +25,16 @@
   <canvas id="sky-canvas" aria-hidden="true"></canvas>
   <div class="wrap sky-copy">
     <p class="kicker">You found</p>
-    <h1>Big R's<br>bench</h1>
+    <h1><span class="bigr">Big R's</span><br>bench</h1>
     <p class="hook">It's here for Ryan Thomas. Take a seat, stay a minute, and meet him.</p>
     <p class="live">
       <span class="chip" id="sky-phase">The sky over the bench</span>
       <span class="chip" id="visit-chip" hidden></span>
     </p>
-    <a class="cue" href="#meet">Meet Big R <span aria-hidden="true">↓</span></a>
+    <div class="cues">
+      <a class="cue" href="#meet">Meet <span class="bigr-on-gold">Big R</span> <span class="arrow" aria-hidden="true">↓</span></a>
+      <a class="cue alt" href="#here">I was here</a>
+    </div>
   </div>
 </header>
 
@@ -43,12 +46,57 @@
          alt="Ryan Thomas smiling, in a carved wooden frame topped with a bald eagle. The brass plate reads Ryan Shane Thomas, Big R.">
     <div class="meet-copy">
       <p class="label">Ryan Shane Thomas · <time datetime="1990-07-15">July 15, 1990</time> – <time datetime="2025-08-09">August 9, 2025</time></p>
-      <h2 class="shout">Everyone called him <em>Big R.</em></h2>
+      <h2 class="shout">Everyone called him <span class="bigr">Big R.</span></h2>
       <p class="say">He was born a healthy, perfect little boy.</p>
       <p class="say">In second grade his hands began to shake. It took doctors seven years to find out why.</p>
       <p class="say">He lived to 35, and he was always willing to give a smile to anyone.</p>
       <p class="aside">Except his Uncle Mike. “He makes me work for it.”</p>
     </div>
+  </div>
+</section>
+
+<section class="band dark here" id="here">
+  <div class="wrap narrow center">
+    <img class="gold-eagle" src="images/first-memorial-outing.png" width="1024" height="628" loading="lazy" alt="">
+    <h2 class="shout">Were you here?</h2>
+    <p id="here-intro">If you sat on Ryan's bench, tell him.</p>
+    <div class="tally" id="tally" hidden>
+      <div class="digits" id="digits" aria-hidden="true"></div>
+      <p class="tally-label" id="tally-label"></p>
+      <p class="tally-last" id="tally-last"></p>
+    </div>
+    <p><button class="button gold big" id="here-button" type="button">I was here</button></p>
+    <p class="hint" id="here-status" aria-live="polite"></p>
+    <p class="bench-line" id="bench-text">Ryan's bench was built by the people who love him, as a place to rest, look around, and think of him. Sit as long as you like.</p>
+    <figure class="photo" id="bench-photo" hidden>
+      <img src="" alt="The memorial bench honoring Ryan Big R Thomas">
+    </figure>
+    <p><a class="button ghost-light" id="bench-directions" href="#" hidden>Directions to the bench</a></p>
+  </div>
+</section>
+
+<section class="band" id="view" hidden>
+  <div class="wrap">
+    <div class="narrow">
+      <h2 class="shout">The view from his bench</h2>
+      <p>Same bench, different sky every day. Take a photo of what you can see from the bench and add it for the next visitor.</p>
+    </div>
+    <div class="gallery" id="view-gallery"></div>
+    <form class="upload narrow" id="upload-form" novalidate>
+      <input class="visually-hidden" type="file" id="photo-input" accept="image/*">
+      <label class="button" for="photo-input" id="photo-pick">Add your photo</label>
+      <div class="upload-step" id="upload-step" hidden>
+        <img id="photo-preview" alt="Your photo, ready to send">
+        <label for="photo-name">First name (optional)</label>
+        <input type="text" id="photo-name" maxlength="30" autocomplete="given-name">
+        <p class="fine">Ryan's family looks at every photo before it appears here. By sending it, you agree it can be shown on this site.</p>
+        <div class="actions">
+          <button class="button" type="submit" id="photo-send">Send photo</button>
+          <button class="button ghost" type="button" id="photo-cancel">Cancel</button>
+        </div>
+      </div>
+      <p class="hint dark-text" id="upload-status" aria-live="polite"></p>
+    </form>
   </div>
 </section>
 
@@ -115,51 +163,6 @@
   </div>
 </section>
 
-<section class="band dark here" id="here">
-  <div class="wrap narrow center">
-    <img class="gold-eagle" src="images/first-memorial-outing.png" width="1024" height="628" loading="lazy" alt="">
-    <h2 class="shout">Were you here?</h2>
-    <p id="here-intro">If you sat on Ryan's bench, tell him.</p>
-    <div class="tally" id="tally" hidden>
-      <div class="digits" id="digits" aria-hidden="true"></div>
-      <p class="tally-label" id="tally-label"></p>
-      <p class="tally-last" id="tally-last"></p>
-    </div>
-    <p><button class="button gold big" id="here-button" type="button">I was here</button></p>
-    <p class="hint" id="here-status" aria-live="polite"></p>
-    <p class="bench-line" id="bench-text">Ryan's bench was built by the people who love him, as a place to rest, look around, and think of him. Sit as long as you like.</p>
-    <figure class="photo" id="bench-photo" hidden>
-      <img src="" alt="The memorial bench honoring Ryan Big R Thomas">
-    </figure>
-    <p><a class="button ghost-light" id="bench-directions" href="#" hidden>Directions to the bench</a></p>
-  </div>
-</section>
-
-<section class="band" id="view" hidden>
-  <div class="wrap">
-    <div class="narrow">
-      <h2 class="shout">The view from his bench</h2>
-      <p>Same bench, different sky every day. Take a photo of what you can see from the bench and add it for the next visitor.</p>
-    </div>
-    <div class="gallery" id="view-gallery"></div>
-    <form class="upload narrow" id="upload-form" novalidate>
-      <input class="visually-hidden" type="file" id="photo-input" accept="image/*">
-      <label class="button" for="photo-input" id="photo-pick">Add your photo</label>
-      <div class="upload-step" id="upload-step" hidden>
-        <img id="photo-preview" alt="Your photo, ready to send">
-        <label for="photo-name">First name (optional)</label>
-        <input type="text" id="photo-name" maxlength="30" autocomplete="given-name">
-        <p class="fine">Ryan's family looks at every photo before it appears here. By sending it, you agree it can be shown on this site.</p>
-        <div class="actions">
-          <button class="button" type="submit" id="photo-send">Send photo</button>
-          <button class="button ghost" type="button" id="photo-cancel">Cancel</button>
-        </div>
-      </div>
-      <p class="hint dark-text" id="upload-status" aria-live="polite"></p>
-    </form>
-  </div>
-</section>
-
 <section class="band tinted" id="gallery-section" hidden>
   <div class="wrap">
     <h2 class="shout narrow">Photos of Ryan</h2>
@@ -211,7 +214,7 @@
 
 <footer class="site-footer">
   <div class="wrap center">
-    <p class="forever">Fly high, Big R</p>
+    <p class="forever">Fly high, <span class="bigr">Big R</span></p>
     <p>Ryan Shane Thomas · 1990–2025</p>
     <p class="links">
       <a href="https://bigrgolf.com" target="_blank" rel="noopener">BigRGolf.com</a>
@@ -226,7 +229,7 @@
   <div class="salute-card">
     <p class="kicker" id="salute-kicker">You are visitor</p>
     <p class="salute-number" id="salute-number"></p>
-    <h2 id="salute-title">Thank you for sitting with Big R.</h2>
+    <h2 id="salute-title">Thank you for sitting with <span class="bigr">Big R.</span></h2>
     <p id="salute-date"></p>
     <button class="button gold" id="salute-close" type="button">Close</button>
   </div>
@@ -238,7 +241,7 @@
   <p id="lightbox-caption"></p>
 </div>
 
-<script src="site-config.js"></script>
-<script src="script.js"></script>
+<script src="site-config.js?v=3"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>
