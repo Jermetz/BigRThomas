@@ -71,7 +71,7 @@ h3 { font-family: var(--ui); font-weight: 700; font-size: 1.125rem; line-height:
 
 /* Meet */
 .meet-grid { display: grid; gap: 2rem; align-items: center; }
-.meet .portrait { width: min(72vw, 320px); margin-inline: auto; filter: drop-shadow(0 16px 22px rgba(6, 38, 42, 0.45)); transform: rotate(-2deg); }
+.meet .portrait { width: min(72vw, 320px); margin-inline: auto; filter: drop-shadow(0 16px 22px rgba(6, 38, 42, 0.45)); }
 .say { font-size: clamp(1.3rem, 5vw, 1.6rem); line-height: 1.35; margin-bottom: 0.9em; }
 .aside { font-style: italic; color: var(--ink-soft); }
 @media (min-width: 48rem) { .meet-grid { grid-template-columns: 22rem minmax(0, 1fr); gap: 4rem; } }
