@@ -9,97 +9,6 @@
      x, y = centre; span = wingtip to wingtip in pixels;
      flap = -1 (wings down) to 1 (wings up).
      ========================================================= */
-  function drawEagle(ctx, x, y, span, flap, heading, night) {
-    // A bald eagle seen from above, the way you see one circling: broad flat
-    // wings with spread "finger" feathers, white head, yellow beak, white tail.
-    // flap: 0 = wings fully spread (gliding), 1 = pulled in mid-wingbeat.
-    var s = span / 2;
-    var dark = night ? '#3f3027' : '#2a1a10';
-    var mid = night ? '#5e4a3b' : '#4d3322';
-    var white = night ? '#dedbd1' : '#fbfaf4';
-    var reach = 1 - 0.26 * flap;
-    var fingers = [[-0.15, 0.30], [0.05, 0.31], [0.25, 0.30], [0.45, 0.27], [0.65, 0.24], [0.85, 0.20]];
-    var i, side;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(heading);
-
-    ctx.beginPath();                                                 // white tail fan
-    ctx.moveTo(-0.05 * s, 0.15 * s);
-    ctx.lineTo(-0.15 * s, 0.40 * s);
-    ctx.quadraticCurveTo(0, 0.47 * s, 0.15 * s, 0.40 * s);
-    ctx.lineTo(0.05 * s, 0.15 * s);
-    ctx.closePath();
-    ctx.fillStyle = white;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(90,80,60,0.35)';
-    ctx.lineWidth = Math.max(0.5, s * 0.008);
-    for (i = -1; i <= 1; i++) {
-      ctx.beginPath(); ctx.moveTo(i * 0.02 * s, 0.22 * s); ctx.lineTo(i * 0.075 * s, 0.42 * s); ctx.stroke();
-    }
-
-    for (side = -1; side <= 1; side += 2) {
-      ctx.save();
-      ctx.scale(side * reach, 1);
-      ctx.fillStyle = dark;
-      for (i = 0; i < fingers.length; i++) {                         // primary "finger" feathers
-        var len = fingers[i][1] * s;
-        ctx.save();
-        ctx.translate((0.69 + i * 0.006) * s, (-0.08 + i * 0.034) * s);
-        ctx.rotate(fingers[i][0] + flap * 0.25);
-        ctx.beginPath();
-        ctx.ellipse(len / 2, 0, len / 2, 0.043 * s, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      ctx.beginPath();                                               // the broad wing
-      ctx.moveTo(0.04 * s, -0.13 * s);
-      ctx.quadraticCurveTo(0.40 * s, -0.21 * s, 0.76 * s, -0.11 * s);
-      ctx.lineTo(0.80 * s, 0.13 * s);
-      ctx.quadraticCurveTo(0.60 * s, 0.28 * s, 0.40 * s, 0.25 * s);
-      ctx.quadraticCurveTo(0.20 * s, 0.27 * s, 0.04 * s, 0.18 * s);
-      ctx.closePath();
-      ctx.fill();
-      ctx.beginPath();                                               // lighter shoulder feathers
-      ctx.moveTo(0.04 * s, -0.13 * s);
-      ctx.quadraticCurveTo(0.40 * s, -0.21 * s, 0.76 * s, -0.11 * s);
-      ctx.lineTo(0.74 * s, -0.02 * s);
-      ctx.quadraticCurveTo(0.40 * s, -0.08 * s, 0.04 * s, 0.0);
-      ctx.closePath();
-      ctx.fillStyle = mid;
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.28)';                          // flight feather lines
-      ctx.lineWidth = Math.max(0.5, s * 0.008);
-      for (i = 0; i < 7; i++) {
-        ctx.beginPath();
-        ctx.moveTo((0.14 + i * 0.09) * s, -0.02 * s);
-        ctx.lineTo((0.15 + i * 0.095) * s, 0.235 * s);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    ctx.beginPath();                                                 // body
-    ctx.ellipse(0, 0.04 * s, 0.085 * s, 0.2 * s, 0, 0, Math.PI * 2);
-    ctx.fillStyle = dark;
-    ctx.fill();
-    ctx.beginPath();                                                 // white head and neck
-    ctx.ellipse(0, -0.185 * s, 0.07 * s, 0.092 * s, 0, 0, Math.PI * 2);
-    ctx.fillStyle = white;
-    ctx.fill();
-    ctx.beginPath();                                                 // hooked yellow beak
-    ctx.moveTo(-0.03 * s, -0.25 * s);
-    ctx.lineTo(0.03 * s, -0.25 * s);
-    ctx.quadraticCurveTo(0.024 * s, -0.32 * s, 0, -0.34 * s);
-    ctx.quadraticCurveTo(-0.024 * s, -0.32 * s, -0.03 * s, -0.25 * s);
-    ctx.fillStyle = '#f2b01e';
-    ctx.fill();
-    ctx.fillStyle = '#1a120c';                                       // eyes
-    ctx.beginPath(); ctx.arc(-0.034 * s, -0.215 * s, 0.011 * s, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(0.034 * s, -0.215 * s, 0.011 * s, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-
   /* =========================================================
      The sky over the bench, matched to the real sun position.
      ========================================================= */
@@ -118,6 +27,8 @@
     var el = Math.asin(Math.sin(lat * rad) * Math.sin(dec) + Math.cos(lat * rad) * Math.cos(dec) * Math.cos(ha));
     return { elevation: el / rad, morning: ha < 0 };
   }
+
+  function smooth(u) { u = Math.max(0, Math.min(1, u)); return u * u * (3 - 2 * u); }
 
   function phaseName(sun) {
     var el = sun.elevation;
@@ -232,15 +143,30 @@
     function frame(now) {
       var t = (now - start) / 1000;
       ctx.drawImage(back, 0, 0, W, H);
-      var a = t * 0.22;                                                // slow circle
-      var rx = W * 0.27, ry = H * 0.075;
-      var x = W * 0.5 + Math.cos(a) * rx;
-      var y = H * 0.18 + Math.sin(a) * ry;
-      var heading = Math.atan2(Math.cos(a) * ry, -Math.sin(a) * rx) + Math.PI / 2;   // face the way it is flying
-      var span = Math.min(230, Math.max(150, W * 0.42)) * (1 + 0.14 * Math.sin(a));
-      var beat = t % 12;                                               // mostly gliding, a few slow wingbeats
-      var flap = beat < 2.4 ? 0.5 - 0.5 * Math.cos(beat / 2.4 * Math.PI * 6) : 0.04 + Math.sin(t * 0.9) * 0.03;
-      drawEagle(ctx, x, y, span, flap, heading, sun && sun.elevation < -4);
+      var a = t * 0.2 + 2.4;                                            // one slow circle every half minute
+      var sa = Math.sin(a), ca = Math.cos(a);
+      var cycle = t % 16;                                              // mostly soaring; now and then a few deep wingbeats
+      var power = Math.max(1 - smooth((t - 2.6) / 1.2), smooth((cycle - 11.5) / 0.7) * (1 - smooth((cycle - 14.3) / 0.9)));
+      var el = sun ? sun.elevation : 30;
+      var tint = el < -6 ? [0.5, 0.57, 0.78] : el < 8 ? [1.1, 0.93, 0.8] : [1, 1, 1];
+      window.BigREagle.draw(ctx, {
+        x: W * 0.5 + ca * W * 0.24,
+        y: H * 0.19 + sa * H * 0.04,                                    // the far side of the circle sits lower in the sky
+        scale: Math.min(175, Math.max(104, W * 0.3)) * (1 - 0.24 * sa),
+        heading: Math.atan2(-sa, ca),
+        bank: 0.4 * (1 - 0.5 * power) + 0.05 * Math.sin(t * 0.8),       // leans into the turn
+        pitch: 0.04 + 0.1 * power,
+        tilt: 0.85,                                                    // you are looking up at it
+        power: power,
+        phase: t * Math.PI * 2 * 1.7,
+        t: t,
+        headYaw: 0.4 * Math.sin(t * 0.45) * Math.sin(t * 0.13 + 1),     // looks around as it soars
+        tailFan: 0.85 - 0.5 * power,
+        tailTwist: 0.18 * Math.sin(t * 0.6),
+        sunSide: sun && sun.morning ? -1 : 1,
+        tint: tint,
+        level: el < -6 ? 0.8 : 1
+      });
     }
 
     function loop(now) {
@@ -341,8 +267,11 @@
       ctx.clearRect(0, 0, W, H);
       if (p >= 1 || box.hidden) return;
       var ease = p * p * (3 - 2 * p);
-      drawEagle(ctx, -W * 0.4 + ease * W * 1.8, H * 0.85 - ease * H * 0.8, Math.min(W * 0.8, 460),
-        0.5 - 0.5 * Math.cos(p * Math.PI * 10), Math.atan2(-H * 0.8, W * 1.8) + Math.PI / 2, false);
+      window.BigREagle.draw(ctx, {
+        x: -W * 0.45 + ease * W * 1.9, y: H * 0.86 - ease * H * 0.8, scale: Math.min(W * 0.42, 240),
+        heading: Math.PI / 2 - 0.35, bank: -0.12, pitch: 0.22, tilt: 0.35,
+        power: 1, phase: p * Math.PI * 2 * 4.5, t: p * 3, tailFan: 0.4, sunSide: 1
+      });
       requestAnimationFrame(fly);
     })(t0);
   }
