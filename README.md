@@ -9,6 +9,9 @@ A simple website with no build step. Every file here is the site.
 | `styles.css`, `script.js` | Look and behavior |
 | `images/` | Photos |
 | `tools/qr-maker.html` | Makes the QR code file for the engraver |
+| `backend/` | The Google Sheet code for the "I was here" counter and visitor photos. Follow `backend/SETUP.md` |
+
+The `.claude` folder is only for previewing on this computer. Don't upload it.
 
 ## Put it online with GitHub Pages (free)
 

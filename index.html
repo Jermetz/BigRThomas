@@ -2,57 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ryan "Big R" Thomas · 1990–2025</title>
-<meta name="description" content="In loving memory of Ryan Shane &quot;Big R&quot; Thomas, July 15, 1990 – August 9, 2025. His story, his bench, and the golf outing played in his honor.">
-<meta property="og:title" content="Ryan &quot;Big R&quot; Thomas · 1990–2025">
-<meta property="og:description" content="In loving memory of Ryan Shane Thomas. His story, his bench, and the golf outing played in his honor.">
+<meta name="description" content="You found Big R's bench. It's here for Ryan Shane Thomas, July 15, 1990 – August 9, 2025. Take a seat and meet him.">
+<meta property="og:title" content="You found Big R's bench">
+<meta property="og:description" content="It's here for Ryan &quot;Big R&quot; Thomas, 1990–2025. Take a seat and meet him.">
 <meta property="og:image" content="https://bigrthomas.com/images/ryan-portrait.png">
 <meta property="og:url" content="https://bigrthomas.com/">
 <link rel="canonical" href="https://bigrthomas.com/">
-<meta name="theme-color" content="#0f2a1c">
+<meta name="theme-color" content="#06262a">
 <link rel="icon" href="images/big-r-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<a class="skip" href="#story">Skip to Ryan's story</a>
+<a class="skip" href="#meet">Skip to Ryan's story</a>
 
-<header class="hero">
-  <div class="wrap hero-inner">
-    <p class="eyebrow">In loving memory</p>
-    <img class="portrait" src="images/ryan-portrait.png" width="462" height="576"
-         alt="Ryan Thomas smiling, in a carved wooden frame topped with an eagle. The brass plate reads Ryan Shane Thomas, Big R.">
-    <div class="plaque">
-      <h1>Ryan Shane Thomas</h1>
-      <p class="nickname">“Big R”</p>
-      <p class="dates"><time datetime="1990-07-15">July 15, 1990</time> <span aria-hidden="true">·</span> <time datetime="2025-08-09">August 9, 2025</time></p>
-    </div>
-    <p class="welcome" id="welcome">If you found this page from Ryan's bench, thank you for sitting with him a while.</p>
-    <nav class="jump" aria-label="On this page">
-      <a href="#story">His story</a>
-      <a href="#bench">The bench</a>
-      <a href="#outing">Golf outing</a>
-      <a href="#remember">Remember him</a>
-    </nav>
+<header class="sky" id="top">
+  <canvas id="sky-canvas" aria-hidden="true"></canvas>
+  <div class="wrap sky-copy">
+    <p class="kicker">You found</p>
+    <h1>Big R's<br>bench</h1>
+    <p class="hook">It's here for Ryan Thomas. Take a seat, stay a minute, and meet him.</p>
+    <p class="live">
+      <span class="chip" id="sky-phase">The sky over the bench</span>
+      <span class="chip" id="visit-chip" hidden></span>
+    </p>
+    <a class="cue" href="#meet">Meet Big R <span aria-hidden="true">↓</span></a>
   </div>
 </header>
 
 <main>
 
-<section class="band intro">
-  <div class="wrap narrow">
-    <p class="lede">Ryan was born a healthy, perfect little boy on July 15, 1990. For most of his 35 years he lived with a rare mitochondrial disease, and he met it with courage and a smile he was always willing to give.</p>
-    <p>His family and friends called him Big R. His uncle called him a hero. This page keeps his story for everyone who knew him, and for everyone who meets him here for the first time.</p>
+<section class="band meet" id="meet">
+  <div class="wrap meet-grid">
+    <img class="portrait" src="images/ryan-portrait.png" width="462" height="576"
+         alt="Ryan Thomas smiling, in a carved wooden frame topped with a bald eagle. The brass plate reads Ryan Shane Thomas, Big R.">
+    <div class="meet-copy">
+      <p class="label">Ryan Shane Thomas · <time datetime="1990-07-15">July 15, 1990</time> – <time datetime="2025-08-09">August 9, 2025</time></p>
+      <h2 class="shout">Everyone called him <em>Big R.</em></h2>
+      <p class="say">He was born a healthy, perfect little boy.</p>
+      <p class="say">In second grade his hands began to shake. It took doctors seven years to find out why.</p>
+      <p class="say">He lived to 35, and he was always willing to give a smile to anyone.</p>
+      <p class="aside">Except his Uncle Mike. “He makes me work for it.”</p>
+    </div>
+  </div>
+</section>
+
+<section class="band dark fight" id="fight">
+  <div class="wrap">
+    <h2 class="shout center">What he was up against</h2>
+    <dl class="figures">
+      <div><dt>1 in 400,000</dt><dd>How rare Ryan's disease is. It is called MERRF, a mitochondrial disease, and there is no cure yet.</dd></div>
+      <div><dt>7 years</dt><dd>From his first symptoms in 1997 to a diagnosis in 2004. Every test before that came back negative.</dd></div>
+      <div><dt>28 years</dt><dd>How long Ryan lived with it, from second grade on.</dd></div>
+    </dl>
+    <blockquote class="pull narrow">
+      <p>Imagine a major city with half of its power plants shut down. At best such conditions would produce a brown out with large sections of the city working far below optimum efficiency. Now imagine your body working with one half of energy producing facility shut down.</p>
+      <footer>Mike Mignogna, Ryan's uncle</footer>
+    </blockquote>
   </div>
 </section>
 
 <section class="band" id="story">
   <div class="wrap narrow">
-    <h2>Ryan's journey</h2>
+    <h2 class="shout">Ryan's flight</h2>
     <p class="section-note">Drawn from the story written by his uncle, Mike Mignogna.</p>
     <ol class="timeline">
       <li><span class="year">1990</span>
@@ -77,7 +94,7 @@
 
 <section class="band tinted" id="hero-letter">
   <div class="wrap narrow">
-    <h2>The definition of a hero</h2>
+    <h2 class="shout">The definition of a hero</h2>
     <p class="section-note">Written by Ryan's uncle, Mike Mignogna, during Ryan's lifetime.</p>
     <blockquote class="letter">
       <p>What is a hero? I know a hero as a soldier, a fireman or a surgeon. The Ancient Romans came to identify a hero as one in the face of danger and adversity, or from a position of weakness, displays courage and a will for self-sacrifice, that is heroism. Ryan to me not only makes my list, but is in every sense of the word, a hero according to the ancient Greeks.</p>
@@ -98,40 +115,65 @@
   </div>
 </section>
 
-<section class="band" id="mito">
-  <div class="wrap narrow">
-    <h2>What Ryan was up against</h2>
-    <p>Mitochondria are found in every cell of the body and produce its energy. Uncle Mike explains it this way:</p>
-    <blockquote class="pull">
-      <p>Imagine a major city with half of its power plants shut down. At best such conditions would produce a brown out with large sections of the city working far below optimum efficiency. Now imagine your body working with one half of energy producing facility shut down.</p>
-    </blockquote>
-    <dl class="facts">
-      <div><dt>Ryan's diagnosis</dt><dd>MERRF: Myoclonic Epilepsy with Ragged Red Fibers</dd></div>
-      <div><dt>How rare</dt><dd>Believed to affect about 1 in 400,000 people</dd></div>
-      <div><dt>Years to diagnose</dt><dd>Seven, from first symptoms in 1997 to an answer in 2004</dd></div>
-    </dl>
-    <p>There is no cure yet. The golf outing held in Ryan's name raises money for mitochondrial disease research so that one day there will be.</p>
-  </div>
-</section>
-
-<section class="band tinted" id="bench">
-  <div class="wrap narrow">
-    <h2>Ryan's bench</h2>
+<section class="band dark here" id="here">
+  <div class="wrap narrow center">
+    <img class="gold-eagle" src="images/first-memorial-outing.png" width="1024" height="628" loading="lazy" alt="">
+    <h2 class="shout">Were you here?</h2>
+    <p id="here-intro">If you sat on Ryan's bench, tell him.</p>
+    <div class="tally" id="tally" hidden>
+      <div class="digits" id="digits" aria-hidden="true"></div>
+      <p class="tally-label" id="tally-label"></p>
+      <p class="tally-last" id="tally-last"></p>
+    </div>
+    <p><button class="button gold big" id="here-button" type="button">I was here</button></p>
+    <p class="hint" id="here-status" aria-live="polite"></p>
+    <p class="bench-line" id="bench-text">Ryan's bench was built by the people who love him, as a place to rest, look around, and think of him. Sit as long as you like.</p>
     <figure class="photo" id="bench-photo" hidden>
       <img src="" alt="The memorial bench honoring Ryan Big R Thomas">
     </figure>
-    <p id="bench-text">A bench in the park carries a plaque honoring Ryan “Big R” Thomas. It was built by the people who love him as a place to rest, look around, and think of him. Sit as long as you like.</p>
-    <p><a class="button ghost" id="bench-directions" href="#" hidden>Directions to the bench</a></p>
+    <p><a class="button ghost-light" id="bench-directions" href="#" hidden>Directions to the bench</a></p>
+  </div>
+</section>
+
+<section class="band" id="view" hidden>
+  <div class="wrap">
+    <div class="narrow">
+      <h2 class="shout">The view from his bench</h2>
+      <p>Same bench, different sky every day. Take a photo of what you can see from the bench and add it for the next visitor.</p>
+    </div>
+    <div class="gallery" id="view-gallery"></div>
+    <form class="upload narrow" id="upload-form" novalidate>
+      <input class="visually-hidden" type="file" id="photo-input" accept="image/*">
+      <label class="button" for="photo-input" id="photo-pick">Add your photo</label>
+      <div class="upload-step" id="upload-step" hidden>
+        <img id="photo-preview" alt="Your photo, ready to send">
+        <label for="photo-name">First name (optional)</label>
+        <input type="text" id="photo-name" maxlength="30" autocomplete="given-name">
+        <p class="fine">Ryan's family looks at every photo before it appears here. By sending it, you agree it can be shown on this site.</p>
+        <div class="actions">
+          <button class="button" type="submit" id="photo-send">Send photo</button>
+          <button class="button ghost" type="button" id="photo-cancel">Cancel</button>
+        </div>
+      </div>
+      <p class="hint dark-text" id="upload-status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="band tinted" id="gallery-section" hidden>
+  <div class="wrap">
+    <h2 class="shout narrow">Photos of Ryan</h2>
+    <div class="gallery" id="gallery"></div>
   </div>
 </section>
 
 <section class="band" id="outing">
   <div class="wrap">
     <div class="outing-head narrow">
-      <img class="logo" src="images/big-r-logo.png" width="700" height="700" alt="Big R Memorial Golf Outing logo">
+      <img class="logo" src="images/big-r-logo.png" width="700" height="700" loading="lazy" alt="Big R Memorial Golf Outing logo">
       <div>
-        <h2>The Big R Memorial Golf Outing</h2>
-        <p>Every year, friends and family gather at The Bucks Club in Jamison, Pennsylvania, for a day of golf in Ryan's honor. The outing supports mitochondrial disease research.</p>
+        <h2 class="shout">They still play for him</h2>
+        <p>Every year, friends and family fill The Bucks Club in Jamison, Pennsylvania, for the Big R Memorial Golf Outing. The money raised goes to mitochondrial disease research, so that one day there is a cure.</p>
       </div>
     </div>
     <figure class="photo wide">
@@ -139,44 +181,29 @@
       <figcaption>The 5th annual outing</figcaption>
     </figure>
     <p class="actions narrow">
-      <a class="button" href="https://bigrgolf.com" target="_blank" rel="noopener">Visit BigRGolf.com</a>
-      <a class="button ghost" href="https://bigrgolf.com" target="_blank" rel="noopener">Donate in Ryan's honor</a>
+      <a class="button" id="donate-link" href="https://bigrgolf.com" target="_blank" rel="noopener">Donate in Ryan's honor</a>
+      <a class="button ghost" href="https://bigrgolf.com" target="_blank" rel="noopener">Visit BigRGolf.com</a>
     </p>
-  </div>
-</section>
-
-<section class="band dark" id="remember">
-  <div class="wrap narrow center">
-    <h2>Remember him</h2>
-    <div class="candle" id="candle" data-lit="false">
-      <div class="flame" aria-hidden="true"></div>
-      <div class="wick" aria-hidden="true"></div>
-      <div class="wax" aria-hidden="true"></div>
-    </div>
-    <p id="candle-status" aria-live="polite">Light a candle for Ryan.</p>
-    <p><button class="button brass" id="candle-button" type="button">Light a candle</button></p>
-    <hr>
-    <p>Have a story, a moment, or a photo of Ryan? His family keeps a memory wall and would love to add yours.</p>
-    <p class="actions">
-      <a class="button brass" href="https://bigrgolf.com" target="_blank" rel="noopener">Share a memory</a>
-      <button class="button ghost-light" id="share-button" type="button">Share this page</button>
-    </p>
-    <p class="hint" id="share-status" aria-live="polite"></p>
-  </div>
-</section>
-
-<section class="band" id="gallery-section" hidden>
-  <div class="wrap">
-    <h2 class="narrow">Photos</h2>
-    <div class="gallery" id="gallery"></div>
   </div>
 </section>
 
 <section class="band tinted" id="prayer">
   <div class="wrap narrow center">
-    <h2>Come to Me</h2>
+    <h2 class="shout">Come to Me</h2>
     <img class="prayer-card" src="images/prayer-card.jpg" width="523" height="877" loading="lazy"
          alt="Ryan's prayer card, with the poem Come to Me beneath an eagle. It ends: May God bless you always.">
+  </div>
+</section>
+
+<section class="band dark pass" id="pass">
+  <div class="wrap narrow center">
+    <h2 class="shout">Now you know him</h2>
+    <p>Tell someone about Big R. If you have a story or a photo of Ryan, his family keeps a memory wall and would love to add yours.</p>
+    <p class="actions">
+      <button class="button gold" id="share-button" type="button">Share Ryan's story</button>
+      <a class="button ghost-light" id="memory-link" href="https://bigrgolf.com" target="_blank" rel="noopener">Share a memory</a>
+    </p>
+    <p class="hint" id="share-status" aria-live="polite"></p>
   </div>
 </section>
 
@@ -184,7 +211,7 @@
 
 <footer class="site-footer">
   <div class="wrap center">
-    <p class="forever">Forever Big R</p>
+    <p class="forever">Fly high, Big R</p>
     <p>Ryan Shane Thomas · 1990–2025</p>
     <p class="links">
       <a href="https://bigrgolf.com" target="_blank" rel="noopener">BigRGolf.com</a>
@@ -193,6 +220,17 @@
     </p>
   </div>
 </footer>
+
+<div class="salute" id="salute" hidden role="dialog" aria-modal="true" aria-labelledby="salute-title">
+  <canvas id="salute-canvas" aria-hidden="true"></canvas>
+  <div class="salute-card">
+    <p class="kicker" id="salute-kicker">You are visitor</p>
+    <p class="salute-number" id="salute-number"></p>
+    <h2 id="salute-title">Thank you for sitting with Big R.</h2>
+    <p id="salute-date"></p>
+    <button class="button gold" id="salute-close" type="button">Close</button>
+  </div>
+</div>
 
 <div class="lightbox" id="lightbox" hidden>
   <button type="button" id="lightbox-close" aria-label="Close photo">Close</button>
