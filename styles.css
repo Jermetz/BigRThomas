@@ -80,7 +80,10 @@ h3 { font-family: var(--ui); font-weight: 700; font-size: 1.125rem; line-height:
 .meet .portrait { width: min(72vw, 320px); margin-inline: auto; filter: drop-shadow(0 16px 22px rgba(6, 38, 42, 0.45)); }
 .say { font-size: clamp(1.3rem, 5vw, 1.6rem); line-height: 1.35; margin-bottom: 0.9em; }
 .aside { font-style: italic; color: var(--ink-soft); }
-@media (min-width: 48rem) { .meet-grid { grid-template-columns: 22rem minmax(0, 1fr); gap: 4rem; } }
+.meet-grid { justify-items: center; text-align: center; gap: 1.5rem; }
+.meet-copy { width: 100%; min-width: 0; }
+.meet .label { white-space: nowrap; letter-spacing: 0.02em; font-size: min(0.95rem, 3.35vw); margin-bottom: 1.1rem; }
+.meet .shout { margin-bottom: 1.5rem; }
 
 /* The fight */
 .figures { margin: 2.5rem 0; display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
@@ -171,6 +174,21 @@ figcaption { font-family: var(--ui); font-size: 0.9375rem; color: var(--ink-soft
 .obit .lede { font-size: 1.375rem; line-height: 1.5; }
 .obit .quote-big { margin-block: 2.5rem; }
 .obit-actions { margin-top: 2.5rem; }
+
+/* Thunderstorm behind the warrior quote */
+.obit-rest { padding-top: 3rem; }
+.storm { --flash: 0; position: relative; overflow: hidden; background: #0b1220; color: #fff; padding-block: 5.5rem; isolation: isolate; }
+#storm-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: -1; }
+.storm-quote { margin: 0; }
+.storm-quote p {
+  font-family: var(--display); font-weight: 900; text-transform: uppercase; text-align: center; text-wrap: balance;
+  font-size: clamp(2.1rem, 9vw, 3.8rem); line-height: 1; margin: 0; color: #f4f8ff;
+  text-shadow:
+    0 0 6px rgba(200, 225, 255, calc(0.55 + 0.45 * var(--flash))),
+    0 0 18px rgba(140, 185, 255, calc(0.45 + 0.55 * var(--flash))),
+    0 0 42px rgba(90, 140, 255, calc(0.35 + 0.65 * var(--flash)));
+}
+.storm-strong { display: block; margin-top: 0.35em; font-size: 1.25em; color: #fff; }
 
 /* Footer */
 .site-footer { background: #031a1d; color: #a9bdb8; padding-block: 2.75rem calc(2.75rem + env(safe-area-inset-bottom, 0px)); font-family: var(--ui); font-size: 1rem; }

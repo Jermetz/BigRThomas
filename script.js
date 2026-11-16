@@ -393,7 +393,7 @@
   });
 
   /* ---------- Bench details, family photos, links, sharing ---------- */
-  if (cfg.parkName) {
+  if (cfg.parkName && $('bench-text')) {
     $('bench-text').textContent = 'Ryan’s bench in ' + cfg.parkName +
       ' was built by the people who love him, as a place to rest, look around, and think of him. Sit as long as you like.';
   }
