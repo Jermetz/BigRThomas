@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bench QR Code Maker</title>
+<style>
+  :root { --green-deep:#0f2a1c; --green:#1d6b40; --brass:#7a5a22; --paper:#f3f6f1; --ink:#16241b; --soft:#4a5a50; --line:#c9d3c8; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.55 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 56rem; margin: 0 auto; padding: 2rem 20px 4rem; }
+  h1 { font: 400 2rem/1.2 Georgia, serif; margin: 0 0 .25rem; }
+  h2 { font-size: 1.1rem; margin: 2rem 0 .5rem; }
+  .sub { color: var(--soft); margin: 0 0 2rem; }
+  .grid { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 2rem; align-items:start; }
+  @media (max-width: 44rem) { .grid { grid-template-columns: 1fr; } }
+  label { display:block; font-weight:600; margin: 1rem 0 .3rem; }
+  input, select { width:100%; font: inherit; padding:.6rem .7rem; border:1px solid var(--line); border-radius:3px; background:#fff; color:var(--ink); }
+  .help { font-size:.9rem; color:var(--soft); margin:.3rem 0 0; }
+  #preview { background:#fff; border:1px solid var(--line); padding:16px; }
+  #preview svg { width:100%; height:auto; display:block; }
+  .stats { font-size:.95rem; color:var(--soft); margin:.75rem 0; }
+  .stats strong { color: var(--ink); }
+  button { font: inherit; font-weight:600; padding:.75rem 1.2rem; border-radius:3px; border:2px solid var(--green); background:var(--green); color:#fff; cursor:pointer; margin:.5rem .5rem 0 0; }
+  button.ghost { background:transparent; color:var(--green); }
+  ul { padding-left: 1.2rem; } li { margin-bottom:.4rem; }
+  .warn { border-left:3px solid var(--brass); padding:.25rem 0 .25rem 1rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Bench QR Code Maker</h1>
+  <p class="sub">Makes the QR code file to send to the engraver. Use it once the website address is final.</p>
+
+  <div class="grid">
+    <div>
+      <label for="url">Website address</label>
+      <input id="url" type="url" value="https://bigrthomas.com" spellcheck="false" autocomplete="off">
+      <p class="help">Shorter addresses make simpler codes with bigger squares, which engrave and scan better.</p>
+
+      <label for="ecc">Damage tolerance</label>
+      <select id="ecc">
+        <option value="H" selected>Highest: still scans with up to 30% worn or dirty (best for outdoors)</option>
+        <option value="Q">High: up to 25%</option>
+        <option value="M">Medium: up to 15%</option>
+      </select>
+
+      <label for="size">Engraved size (inches, edge to edge including the blank border)</label>
+      <input id="size" type="number" value="2.5" min="1" max="12" step="0.25">
+
+      <div>
+        <button id="svg" type="button">Download SVG (for the engraver)</button>
+        <button id="png" type="button" class="ghost">Download PNG</button>
+      </div>
+    </div>
+
+    <div>
+      <div id="preview" aria-label="QR code preview"></div>
+      <p class="stats" id="stats"></p>
+    </div>
+  </div>
+
+  <h2>Before you engrave</h2>
+  <ul>
+    <li class="warn"><strong>The address is permanent.</strong> Metal can't be updated, so the address in the code must work for as long as the bench stands. Own the domain first, and keep it renewed.</li>
+    <li>Print this code on paper at the real size and scan it with a few different phones before sending it out.</li>
+    <li>Ask the engraver for <strong>dark squares on a light background</strong> with strong contrast, such as black-filled engraving on brushed stainless or anodized aluminum. Shiny bare metal on metal is hard for cameras to read.</li>
+    <li>Keep the blank border around the code. Phones need it to find the edges.</li>
+    <li>Each small square should be at least 0.04 inch (1 mm) so it survives weather. The numbers under the preview tell you where you stand.</li>
+    <li>Ask the engraver not to round, smooth or restyle the squares.</li>
+  </ul>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  var QUIET = 4; // blank border, in squares (the QR standard minimum)
+  var $ = function (id) { return document.getElementById(id); };
+  var current = '';
+
+  function build() {
+    var text = $('url').value.trim();
+    if (!text) { $('preview').innerHTML = ''; $('stats').textContent = 'Enter the website address.'; return; }
+    var qr = qrcode(0, $('ecc').value);
+    qr.addData(text);
+    qr.make();
+    var n = qr.getModuleCount(), total = n + QUIET * 2, path = '';
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        if (!qr.isDark(r, c)) continue;
+        var run = 1;
+        while (c + run < n && qr.isDark(r, c + run)) run++;
+        path += 'M' + (c + QUIET) + ' ' + (r + QUIET) + 'h' + run + 'v1h-' + run + 'z';
+        c += run - 1;
+      }
+    }
+    var inches = parseFloat($('size').value) || 2.5;
+    current = '<svg xmlns="http://www.w3.org/2000/svg" width="' + inches + 'in" height="' + inches + 'in" viewBox="0 0 ' + total + ' ' + total + '" shape-rendering="crispEdges">' +
+      '<rect width="' + total + '" height="' + total + '" fill="#ffffff"/><path d="' + path + '" fill="#000000"/></svg>';
+    $('preview').innerHTML = current;
+    var sq = inches / total;
+    $('stats').innerHTML = '<strong>' + n + ' × ' + n + '</strong> squares. At ' + inches + ' in, each square is <strong>' +
+      sq.toFixed(3) + ' in</strong> (' + (sq * 25.4).toFixed(2) + ' mm). ' +
+      (sq < 0.04 ? 'That is small for outdoor metal. Make the code larger or the address shorter.' : 'Good for engraving.');
+  }
+
+  function save(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  $('svg').addEventListener('click', function () {
+    if (current) save(new Blob([current], { type: 'image/svg+xml' }), 'big-r-bench-qr.svg');
+  });
+  $('png').addEventListener('click', function () {
+    if (!current) return;
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement('canvas'); c.width = c.height = 2400;
+      var ctx = c.getContext('2d'); ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, 0, 0, 2400, 2400);
+      c.toBlob(function (b) { save(b, 'big-r-bench-qr.png'); });
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(current);
+  });
+
+  ['url', 'ecc', 'size'].forEach(function (id) { $(id).addEventListener('input', build); });
+  build();
+})();
+</script>
+</body>
+</html>
