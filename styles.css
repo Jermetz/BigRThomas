@@ -91,7 +91,7 @@ h3 { font-family: var(--ui); font-weight: 700; font-size: 1.125rem; line-height:
 
 /* Timeline */
 .timeline { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--line); }
-.timeline li { position: relative; display: grid; grid-template-columns: 4.75rem minmax(0, 1fr); gap: 0.75rem; padding: 0 0 2rem 1.25rem; }
+.timeline li { position: relative; display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 0.75rem; padding: 0 0 2rem 1.25rem; }
 .timeline li:last-child { padding-bottom: 0; }
 .timeline li::before { content: ""; position: absolute; left: -9px; top: 0.6rem; width: 15px; height: 15px; border-radius: 50%; background: var(--paper); border: 3px solid var(--green); }
 .timeline li:last-child::before { background: var(--red); border-color: var(--red); }
@@ -150,6 +150,27 @@ figcaption { font-family: var(--ui); font-size: 0.9375rem; color: var(--ink-soft
 .button.big { font-family: var(--display); font-weight: 900; text-transform: uppercase; letter-spacing: 0.03em; font-size: clamp(1.9rem, 8vw, 2.5rem); padding: 0.55rem 2rem 0.45rem; box-shadow: 0 0 0 6px rgba(226, 182, 83, 0.18); }
 .hint { font-family: var(--ui); font-size: 0.95rem; color: #a9bdb8; min-height: 1.5em; margin-top: 0.75rem; }
 .hint.dark-text { color: var(--ink-soft); }
+
+/* Ryan's own words, and the obituary page */
+.quote-big { margin: 0 0 2rem; }
+.quote-big p { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: clamp(2rem, 8.5vw, 3.4rem); line-height: 0.98; color: var(--ink); text-wrap: balance; margin: 0; }
+.quote-big p::before { content: "\201C"; color: var(--red); }
+.quote-big p::after { content: "\201D"; color: var(--red); }
+.quote-big footer { font-family: var(--ui); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.95rem; color: var(--ink-soft); margin-top: 1rem; }
+.traits { list-style: none; margin: 0 0 1.75rem; padding: 0; border-top: 1px solid var(--line); }
+.traits li { padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+.happy-line { font-size: 1.3rem; margin-bottom: 1.5rem; }
+.happy { font-family: var(--body); font-style: italic; font-size: 1.15rem; color: #dbe7e3; margin-bottom: 0.6rem; }
+
+.page-head { background: radial-gradient(ellipse 90% 80% at 50% 0%, var(--midnight-2), var(--midnight) 75%); color: var(--white); padding-block: 1.5rem 3rem; }
+.page-head .back { display: inline-block; font-family: var(--ui); font-weight: 600; color: var(--gold); text-decoration: none; padding: 0.5rem 0; margin-bottom: 2rem; }
+.page-head .kicker { color: var(--gold); }
+.page-head h1 { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: clamp(3rem, 14vw, 5.5rem); line-height: 0.88; margin: 0.4rem 0 0.9rem; }
+.page-dates { font-family: var(--ui); font-size: 1.1rem; margin: 0; color: #dbe7e3; }
+.page-head .bigr { color: var(--red-bright); font-weight: 700; }
+.obit .lede { font-size: 1.375rem; line-height: 1.5; }
+.obit .quote-big { margin-block: 2.5rem; }
+.obit-actions { margin-top: 2.5rem; }
 
 /* Footer */
 .site-footer { background: #031a1d; color: #a9bdb8; padding-block: 2.75rem calc(2.75rem + env(safe-area-inset-bottom, 0px)); font-family: var(--ui); font-size: 1rem; }
