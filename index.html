@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
     <p class="hook">It's here for Ryan Thomas. Take a seat, stay a minute, and meet him.</p>
     <p class="live">
       <span class="chip" id="sky-phase">The sky over the bench</span>
-      <span class="chip" id="visit-chip" hidden></span>
+      <span class="chip pending" id="visit-chip" aria-hidden="true">0 visitors so far</span>
     </p>
     <div class="cues">
       <a class="cue" href="#meet">Meet <span class="bigr-on-gold">Big R</span> <span class="arrow" aria-hidden="true">↓</span></a>
@@ -171,11 +171,9 @@
 <section class="band dark pass" id="pass">
   <div class="wrap narrow center">
     <h2 class="shout">Now you know him</h2>
-    <p>Tell someone about Big R. If you have a story or a photo of Ryan, his family keeps a memory wall and would love to add yours.</p>
+    <p>Tell someone about Big R.</p>
     <p class="actions">
-      <button class="button gold" id="share-button" type="button">Share Ryan's story</button>
-      <a class="button ghost-light" id="memory-link" href="https://bigrgolf.com" target="_blank" rel="noopener">Share a memory</a>
-    </p>
+      <button class="button gold" id="share-button" type="button">Share Ryan's story</button>    </p>
     <p class="hint" id="share-status" aria-live="polite"></p>
   </div>
 </section>
@@ -212,8 +210,8 @@
   <p id="lightbox-caption"></p>
 </div>
 
-<script src="site-config.js?v=9"></script>
-<script src="eagle.js?v=9"></script>
-<script src="script.js?v=9"></script>
+<script src="site-config.js?v=11"></script>
+<script src="eagle.js?v=11"></script>
+<script src="script.js?v=11"></script>
 </body>
 </html>

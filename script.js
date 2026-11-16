@@ -150,9 +150,9 @@
       var el = sun ? sun.elevation : 30;
       var tint = el < -6 ? [0.5, 0.57, 0.78] : el < 8 ? [1.1, 0.93, 0.8] : [1, 1, 1];
       window.BigREagle.draw(ctx, {
-        x: W * 0.5 + ca * W * 0.24,
-        y: H * 0.19 + sa * H * 0.04,                                    // the far side of the circle sits lower in the sky
-        scale: Math.min(175, Math.max(104, W * 0.3)) * (1 - 0.24 * sa),
+        x: W * 0.5 + ca * W * 0.2,
+        y: H * 0.16 + sa * H * 0.03,                                    // the far side of the circle sits lower in the sky
+        scale: Math.min(96, Math.max(56, W * 0.165)) * (1 - 0.22 * sa), // high up and far off
         heading: Math.atan2(-sa, ca),
         bank: 0.4 * (1 - 0.5 * power) + 0.05 * Math.sin(t * 0.8),       // leans into the turn
         pitch: 0.04 + 0.1 * power,
@@ -246,7 +246,8 @@
     $('tally').hidden = false;
     var chip = $('visit-chip');
     chip.textContent = count.toLocaleString() + (count === 1 ? ' visitor so far' : ' visitors so far');
-    chip.hidden = false;
+    chip.classList.remove('pending');                                  // its space was saved from the start, so nothing moves
+    chip.removeAttribute('aria-hidden');
   }
 
   function salute(number) {
@@ -406,7 +407,7 @@
     var dir = $('bench-directions');
     dir.href = cfg.benchMapLink; dir.target = '_blank'; dir.rel = 'noopener'; dir.hidden = false;
   }
-  if (cfg.memoryLink) $('memory-link').href = cfg.memoryLink;
+  if (cfg.memoryLink && $('memory-link')) $('memory-link').href = cfg.memoryLink;
   if (cfg.donateLink) $('donate-link').href = cfg.donateLink;
 
   var family = (cfg.photos || []).filter(function (p) { return p && p.file; });

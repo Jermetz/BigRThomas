@@ -32,7 +32,107 @@
       makeBolt(mx, my, bx, by, spread / 2.5, depth - 2, out, width * 0.55);
     }
   }
+  /* ---------- Sound: rain, the crack of lightning, rolling thunder ----------
+     Made on the fly with the Web Audio API, so there are no sound files.
+     Phones only allow sound after a tap, so the first tap anywhere on the page
+     turns it on; the button in the storm does the same and also mutes it.
+     It plays only while the storm is on screen and fades out when you scroll past. */
+  var audio = null, wantSound = true, soundInView = false;
+  var soundBtn = document.getElementById('storm-sound');
+  function noiseBuffer(ac, seconds, brown) {
+    var len = Math.round(ac.sampleRate * seconds), buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0), last = 0;
+    for (var i = 0; i < len; i++) {
+      var w = Math.random() * 2 - 1;
+      if (brown) { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w;
+    }
+    return buf;
+  }
+  function startAudio() {
+    if (audio) { audio.ctx.resume(); return; }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    var ac = new AC(), master = ac.createGain();
+    master.gain.value = 0;
+    master.connect(ac.destination);
+    var white = noiseBuffer(ac, 3, false), brown = noiseBuffer(ac, 6, true);
+    var rain = ac.createBufferSource(); rain.buffer = white; rain.loop = true;      // steady rain
+    var rainHi = ac.createBiquadFilter(); rainHi.type = 'highpass'; rainHi.frequency.value = 900;
+    var rainLo = ac.createBiquadFilter(); rainLo.type = 'lowpass'; rainLo.frequency.value = 7000;
+    var rainGain = ac.createGain(); rainGain.gain.value = 0.085;
+    rain.connect(rainHi); rainHi.connect(rainLo); rainLo.connect(rainGain); rainGain.connect(master);
+    var wind = ac.createBufferSource(); wind.buffer = brown; wind.loop = true;      // low rumble of the storm
+    var windLo = ac.createBiquadFilter(); windLo.type = 'lowpass'; windLo.frequency.value = 260;
+    var windGain = ac.createGain(); windGain.gain.value = 0.5;
+    wind.connect(windLo); windLo.connect(windGain); windGain.connect(master);
+    rain.start(); wind.start();
+    audio = { ctx: ac, master: master, white: white, brown: brown };
+    updateSound();
+  }
+  function thunder() {
+    if (!audio || !wantSound || !soundInView || audio.ctx.state !== 'running') return;
+    var ac = audio.ctx, now = ac.currentTime;
+    var crack = ac.createBufferSource(); crack.buffer = audio.white;               // the sharp crack of the bolt
+    var crackHp = ac.createBiquadFilter(); crackHp.type = 'highpass'; crackHp.frequency.value = 1400;
+    var crackGain = ac.createGain();
+    crackGain.gain.setValueAtTime(0, now);
+    crackGain.gain.linearRampToValueAtTime(0.55, now + 0.006);
+    crackGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    crack.connect(crackHp); crackHp.connect(crackGain); crackGain.connect(audio.master);
+    crack.start(now, Math.random() * 2, 0.5);
+    var delay = rand(0.15, 0.9), len = rand(3.5, 6);                              // sound arrives after the light
+    var roll = ac.createBufferSource(); roll.buffer = audio.brown;                // the long rolling boom
+    var rollLp = ac.createBiquadFilter(); rollLp.type = 'lowpass';
+    rollLp.frequency.setValueAtTime(900, now + delay);
+    rollLp.frequency.exponentialRampToValueAtTime(110, now + delay + len);
+    var rollGain = ac.createGain(), t = now + delay;
+    rollGain.gain.setValueAtTime(0, now);
+    rollGain.gain.linearRampToValueAtTime(1.4, t + 0.08);
+    for (var k = 1; k <= 4; k++) {                                               // it rumbles in waves as it fades
+      var at = t + len * k / 5;
+      rollGain.gain.linearRampToValueAtTime(rand(0.35, 1.1) * (1 - k / 5.5), at);
+    }
+    rollGain.gain.linearRampToValueAtTime(0, t + len);
+    roll.connect(rollLp); rollLp.connect(rollGain); rollGain.connect(audio.master);
+    roll.start(now, Math.random() * 1.5, delay + len + 0.1);
+  }
+  function updateSound() {
+    if (soundBtn) {
+      soundBtn.textContent = wantSound && audio ? 'Turn off the storm sound' : 'Hear the storm';
+      soundBtn.setAttribute('aria-pressed', String(!!(wantSound && audio)));
+    }
+    if (!audio) return;
+    var on = wantSound && soundInView, g = audio.master.gain, now = audio.ctx.currentTime;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(g.value, now);
+    g.linearRampToValueAtTime(on ? 0.9 : 0, now + (on ? 1.5 : 0.8));             // fade in, or fade away
+    if (on) audio.ctx.resume();
+    else setTimeout(function () { if (!(wantSound && soundInView) && audio.ctx.state === 'running') audio.ctx.suspend(); }, 900);
+  }
+  if (soundBtn) {
+    soundBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!audio) { wantSound = true; startAudio(); }
+      else { wantSound = !wantSound; updateSound(); }
+      updateSound();
+    });
+  }
+  function firstTap(e) {                                                         // any tap on the page unlocks sound
+    if (soundBtn && e && e.target && soundBtn.contains(e.target)) return;        // the button handles itself
+    document.removeEventListener('pointerup', firstTap, true);
+    document.removeEventListener('keydown', firstTap, true);
+    if (!audio && wantSound) startAudio();
+  }
+  document.addEventListener('pointerup', firstTap, true);
+  document.addEventListener('keydown', firstTap, true);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) {
+      soundInView = e[0].isIntersecting;
+      updateSound();
+    }, { threshold: 0.35 }).observe(section);
+  }
+
   function strike() {
+    thunder();
     var x = rand(0.1, 0.9) * W, segs = [];
     makeBolt(x, -10, x + rand(-0.25, 0.25) * W, H * rand(0.75, 1.05), W * 0.12, 7, segs, Math.max(1.6, W / 380));
     bolts.push({ segs: segs, life: 1 });
@@ -139,6 +239,9 @@
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(section);
   }
-  window.BigRStorm = { strike: strike };   // lets the family trigger a strike when checking the page
+  window.BigRStorm = {
+    strike: strike,
+    sound: function () { return audio ? { state: audio.ctx.state, volume: +audio.master.gain.value.toFixed(2), on: wantSound, inView: soundInView } : null; }
+  };   // lets the family trigger a strike when checking the page
   requestAnimationFrame(loop);
 })();

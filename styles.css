@@ -62,6 +62,8 @@ h3 { font-family: var(--ui); font-weight: 700; font-size: 1.125rem; line-height:
 .hook { font-size: clamp(1.2rem, 4.6vw, 1.5rem); line-height: 1.4; max-width: 24rem; margin-bottom: 1.25rem; }
 .live { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; text-shadow: none; }
 .chip { font-family: var(--ui); font-size: 0.9rem; font-weight: 600; background: rgba(4, 22, 28, 0.6); border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; padding: 0.3rem 0.85rem; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.chip { transition: opacity 0.6s ease; }
+.chip.pending { visibility: hidden; opacity: 0; }
 .chip::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-right: 0.5rem; }
 .cue { display: inline-block; font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 1.5rem; letter-spacing: 0.04em; color: var(--midnight); background: var(--gold); padding: 0.65rem 1.25rem; text-decoration: none; text-shadow: none; }
 .cue .arrow { display: inline-block; animation: nudge 1.8s ease-in-out infinite; }
@@ -189,6 +191,10 @@ figcaption { font-family: var(--ui); font-size: 0.9375rem; color: var(--ink-soft
     0 0 42px rgba(90, 140, 255, calc(0.35 + 0.65 * var(--flash)));
 }
 .storm-strong { display: block; margin-top: 0.35em; font-size: 1.25em; color: #fff; }
+.storm-sound-row { text-align: center; margin: 2.25rem 0 0; }
+.storm-sound { font-family: var(--ui); font-weight: 600; font-size: 0.95rem; color: #dfe9ff; background: rgba(8, 14, 28, 0.55); border: 1px solid rgba(170, 200, 255, 0.5); border-radius: 999px; padding: 0.55rem 1.1rem; cursor: pointer; }
+.storm-sound::before { content: ""; display: inline-block; width: 0.55em; height: 0.55em; border-radius: 50%; background: rgba(170, 200, 255, 0.4); margin-right: 0.5em; vertical-align: 0.05em; }
+.storm-sound[aria-pressed="true"]::before { background: #9cc2ff; box-shadow: 0 0 8px #9cc2ff; }
 
 /* Footer */
 .site-footer { background: #031a1d; color: #a9bdb8; padding-block: 2.75rem calc(2.75rem + env(safe-area-inset-bottom, 0px)); font-family: var(--ui); font-size: 1rem; }
