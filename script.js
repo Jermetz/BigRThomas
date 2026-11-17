@@ -134,13 +134,58 @@
     }
 
     /* ---------- The season: snow, blossom, fireflies, leaves ---------- */
-    var LEAF = ['#c8501e', '#e08a1c', '#b8321e', '#d9a531', '#9a4016'];
+    /* Leaf shapes, drawn about 20 units tall with the stem pointing down. */
+    function leafPath(pts) {                                            // mirror the right half to make the left
+      var p = new Path2D(), i;
+      p.moveTo(pts[0][0], pts[0][1]);
+      for (i = 1; i < pts.length; i++) p.lineTo(pts[i][0], pts[i][1]);
+      for (i = pts.length - 1; i >= 0; i--) p.lineTo(-pts[i][0], pts[i][1]);
+      p.closePath();
+      return p;
+    }
+    var MAPLE = leafPath([[0, -10], [1.5, -6.6], [3.4, -7.6], [2.7, -4.1], [5.2, -4.5], [8.8, -5.4], [7.3, -3.0],
+                          [9.4, -1.6], [5.5, 0.1], [6.9, 2.9], [3.3, 2.0], [1.3, 3.2], [0.5, 3.1]]);
+    var OAK = (function () {                                            // long, with round wavy lobes
+      var pts = [];
+      for (var k = 0; k <= 40; k++) {
+        var t = k / 40;
+        var w = Math.pow(Math.sin(Math.PI * t), 0.8) * (0.5 + 0.5 * Math.abs(Math.cos(Math.PI * t * 3.5))) * 4.6;
+        pts.push([Math.max(0.25, w), -9 + t * 15.5]);
+      }
+      return leafPath(pts);
+    })();
+    var GINKGO = new Path2D();                                          // a little fan with a notch
+    GINKGO.moveTo(0, 3.5);
+    GINKGO.lineTo(-6.6, -3.6);
+    GINKGO.quadraticCurveTo(-4.2, -8.4, -0.7, -7.4);
+    GINKGO.lineTo(0, -5.4);
+    GINKGO.lineTo(0.7, -7.4);
+    GINKGO.quadraticCurveTo(4.2, -8.4, 6.6, -3.6);
+    GINKGO.closePath();
+    var PLAIN = new Path2D();                                           // birch or cherry: a pointed oval
+    PLAIN.moveTo(0, -9);
+    PLAIN.quadraticCurveTo(6.5, -2.5, 0, 6.5);
+    PLAIN.quadraticCurveTo(-6.5, -2.5, 0, -9);
+    var LEAF_KINDS = [
+      { path: MAPLE, odds: 0.42, colors: ['#c8301e', '#e0601c', '#b8221e', '#e8901f', '#a8281a'], vein: true },
+      { path: OAK, odds: 0.24, colors: ['#9a4a16', '#7c3a14', '#b8642a', '#8a5a1e'], vein: true },
+      { path: GINKGO, odds: 0.14, colors: ['#e8b829', '#f0c93a', '#d9a521'], vein: false },
+      { path: PLAIN, odds: 0.20, colors: ['#d9a531', '#e08a1c', '#c47a20', '#b8321e'], vein: true }
+    ];
+    function pickLeaf() {
+      var roll = Math.random(), k = 0;
+      while (k < LEAF_KINDS.length - 1 && roll > LEAF_KINDS[k].odds) { roll -= LEAF_KINDS[k].odds; k++; }
+      return LEAF_KINDS[k];
+    }
     var PETAL = ['#f7c6d4', '#fbe3ea', '#f3b3c6'];
     function makeParticle(fresh) {
       var p = { x: Math.random() * W, y: fresh ? Math.random() * H : -20 - Math.random() * 40,
                 rot: Math.random() * 6.28, spin: (Math.random() - 0.5) * 2.4, ph: Math.random() * 6.28 };
       if (season === 'winter') { p.r = 0.8 + Math.random() * 2.2; p.vy = 14 + p.r * 9; p.sway = 10 + Math.random() * 14; }
-      else if (season === 'fall') { p.r = 4 + Math.random() * 4; p.vy = 22 + Math.random() * 20; p.sway = 30 + Math.random() * 30; p.c = LEAF[(Math.random() * LEAF.length) | 0]; }
+      else if (season === 'fall') {
+        p.kind = pickLeaf(); p.c = p.kind.colors[(Math.random() * p.kind.colors.length) | 0];
+        p.r = 8 + Math.random() * 6; p.vy = 22 + Math.random() * 20; p.sway = 30 + Math.random() * 30;
+      }
       else if (season === 'spring') { p.r = 2.2 + Math.random() * 2; p.vy = 12 + Math.random() * 12; p.sway = 24 + Math.random() * 20; p.c = PETAL[(Math.random() * PETAL.length) | 0]; }
       else { p.y = H * (0.5 + Math.random() * 0.38); p.r = 1.4 + Math.random(); p.vy = 0; p.sway = 14; p.vx = (Math.random() - 0.5) * 10; }
       return p;
@@ -179,18 +224,21 @@
           ctx.fillStyle = 'rgba(255,255,255,' + (0.85 * dim).toFixed(2) + ')';
           ctx.beginPath(); ctx.arc(x, p.y, p.r, 0, 6.2832); ctx.fill();
         } else {
-          ctx.globalAlpha = 0.92 * dim;
+          ctx.globalAlpha = season === 'fall' ? (dim < 1 ? 0.8 : 0.95) : 0.92 * dim;
           ctx.fillStyle = p.c;
           ctx.translate(x, p.y); ctx.rotate(p.rot);
-          ctx.scale(1, 0.55 + 0.45 * Math.abs(Math.sin(t * 2 + p.ph)));  // tumbling
+          ctx.scale(1, (season === 'fall' ? 0.7 : 0.55) + (season === 'fall' ? 0.3 : 0.45) * Math.abs(Math.sin(t * 2 + p.ph)));  // tumbling
           ctx.beginPath();
-          if (season === 'fall') {                                      // a pointed leaf with a stem
-            ctx.moveTo(-p.r, 0);
-            ctx.quadraticCurveTo(0, -p.r * 0.9, p.r, 0);
-            ctx.quadraticCurveTo(0, p.r * 0.9, -p.r, 0);
-            ctx.fill();
-            ctx.strokeStyle = p.c; ctx.lineWidth = 0.8;
-            ctx.beginPath(); ctx.moveTo(-p.r, 0); ctx.lineTo(-p.r * 1.5, 0); ctx.stroke();
+          if (season === 'fall') {                                      // maple, oak, ginkgo or plain, with a stem
+            var k = p.r / 9;
+            ctx.scale(k, k);
+            ctx.fill(p.kind.path);
+            ctx.strokeStyle = p.c; ctx.lineWidth = 1.1;
+            ctx.beginPath(); ctx.moveTo(0, 2.5); ctx.lineTo(0.4, 8); ctx.stroke();       // stem
+            if (p.kind.vein) {                                          // a darker centre vein
+              ctx.strokeStyle = 'rgba(60,20,8,0.35)'; ctx.lineWidth = 0.7;
+              ctx.beginPath(); ctx.moveTo(0, 3); ctx.lineTo(0, -7.5); ctx.stroke();
+            }
           } else {
             ctx.ellipse(0, 0, p.r, p.r * 0.65, 0, 0, 6.2832);
             ctx.fill();
