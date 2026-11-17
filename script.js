@@ -423,6 +423,11 @@
     hereBtn.textContent = 'You were here';
     hereStatus.textContent = number ? 'You are visitor No. ' + number.toLocaleString() + '. Come back any time.' : 'Thank you for sitting with Ryan.';
   }
+  // Testing helper: open bigrthomas.com/?reset to make this phone forget today's visit.
+  if (/[?&]reset\b/.test(location.search)) {
+    try { localStorage.removeItem('bigr-visit'); } catch (e) {}
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
   var signed = store('bigr-visit');
   if (signed && signed.day === today()) markSigned(signed.number);
 
