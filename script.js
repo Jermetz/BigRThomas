@@ -408,7 +408,7 @@
     dir.href = cfg.benchMapLink; dir.target = '_blank'; dir.rel = 'noopener'; dir.hidden = false;
   }
   if (cfg.memoryLink && $('memory-link')) $('memory-link').href = cfg.memoryLink;
-  if (cfg.donateLink) $('donate-link').href = cfg.donateLink;
+  if (cfg.donateLink && $('donate-link')) $('donate-link').href = cfg.donateLink;
 
   var family = (cfg.photos || []).filter(function (p) { return p && p.file; });
   if (family.length) {
