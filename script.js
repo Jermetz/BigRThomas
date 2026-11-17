@@ -63,12 +63,144 @@
     return [1, 2, 3].map(function (k) { return rgb(SKY[SKY.length - 1][k]); });
   }
 
+  // The season at the bench (Pennsylvania). ?season=winter etc. previews another one.
+  var SEASON_NAMES = { winter: 'Winter', spring: 'Spring', summer: 'Summer', fall: 'Autumn' };
+  function seasonAt(d) {
+    var forced = /[?&]season=(winter|spring|summer|fall)/.exec(location.search);
+    if (forced) return forced[1];
+    var m = d.getMonth();
+    return m === 11 || m < 2 ? 'winter' : m < 5 ? 'spring' : m < 8 ? 'summer' : 'fall';
+  }
+
+  // A steady pseudo-random number for star n, so every visitor's star keeps its place.
+  function hash(n, k) {
+    var x = Math.sin(n * 127.1 + k * 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
   (function sky() {
     var canvas = $('sky-canvas');
     if (!canvas || !canvas.getContext) return;
     var ctx = canvas.getContext('2d');
     var back = document.createElement('canvas'), bctx = back.getContext('2d');
     var W = 0, H = 0, dpr = 1, sun = null, visible = true, start = performance.now();
+    var season = seasonAt(new Date()), particles = [], lastT = 0;
+
+    /* ---------- One star for every visitor ---------- */
+    var visitors = 0, myStar = 0, newStar = 0, bornT = -1;
+    try { var saved = JSON.parse(localStorage.getItem('bigr-visit')); if (saved && saved.number) myStar = saved.number; } catch (e) {}
+    window.BigRSky = {
+      setVisitors: function (n) { if (n > visitors) visitors = n; },
+      addMine: function (n) { visitors = Math.max(visitors, n); myStar = n; newStar = n; bornT = -1; }
+    };
+    function starAt(i) {                                                // i = visitor number, from 1
+      var x = 0.03 + hash(i, 1) * 0.94;
+      var y = 0.03 + Math.pow(hash(i, 2), 1.3) * 0.55;                  // more of them high up
+      return { x: x * W, y: y * H, r: 0.9 + hash(i, 3) * 1.3, rate: 0.6 + hash(i, 4) * 1.8, ph: hash(i, 5) * 6.28 };
+    }
+    function drawVisitorStars(t) {
+      if (!visitors) return;
+      var el = sun ? sun.elevation : 30;
+      var night = Math.max(0, Math.min(1, (-el - 2) / 8));
+      var base = 0.28 + 0.72 * night;                                   // faint gold glints by day, bright at night
+      var n = Math.min(visitors, 3000);
+      ctx.save();
+      for (var i = 1; i <= n; i++) {
+        var s = starAt(i), born = 1;
+        if (i === newStar && bornT >= 0) born = smooth((t - bornT) / 2.2);
+        if (i === newStar && bornT < 0) continue;                       // waits until you are back up here
+        var a = base * (0.65 + 0.35 * Math.sin(t * s.rate + s.ph)) * born;
+        var r = s.r * (i === myStar ? 1.7 : 1);
+        ctx.fillStyle = 'rgba(255,214,130,' + (a * 0.22).toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(s.x, s.y, r * 3.2, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = 'rgba(255,240,200,' + a.toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(s.x, s.y, r, 0, 6.2832); ctx.fill();
+        if (i === myStar) {                                             // your star gets a little cross of light
+          ctx.strokeStyle = 'rgba(255,236,190,' + (a * 0.7).toFixed(3) + ')';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(s.x - r * 5, s.y); ctx.lineTo(s.x + r * 5, s.y);
+          ctx.moveTo(s.x, s.y - r * 5); ctx.lineTo(s.x, s.y + r * 5);
+          ctx.stroke();
+        }
+        if (i === newStar && bornT >= 0 && t - bornT < 3) {             // a ring of light as it is born
+          var p = (t - bornT) / 3;
+          ctx.strokeStyle = 'rgba(255,226,160,' + (0.8 * (1 - p)).toFixed(3) + ')';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(s.x, s.y, 4 + p * 40, 0, 6.2832); ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    /* ---------- The season: snow, blossom, fireflies, leaves ---------- */
+    var LEAF = ['#c8501e', '#e08a1c', '#b8321e', '#d9a531', '#9a4016'];
+    var PETAL = ['#f7c6d4', '#fbe3ea', '#f3b3c6'];
+    function makeParticle(fresh) {
+      var p = { x: Math.random() * W, y: fresh ? Math.random() * H : -20 - Math.random() * 40,
+                rot: Math.random() * 6.28, spin: (Math.random() - 0.5) * 2.4, ph: Math.random() * 6.28 };
+      if (season === 'winter') { p.r = 0.8 + Math.random() * 2.2; p.vy = 14 + p.r * 9; p.sway = 10 + Math.random() * 14; }
+      else if (season === 'fall') { p.r = 4 + Math.random() * 4; p.vy = 22 + Math.random() * 20; p.sway = 30 + Math.random() * 30; p.c = LEAF[(Math.random() * LEAF.length) | 0]; }
+      else if (season === 'spring') { p.r = 2.2 + Math.random() * 2; p.vy = 12 + Math.random() * 12; p.sway = 24 + Math.random() * 20; p.c = PETAL[(Math.random() * PETAL.length) | 0]; }
+      else { p.y = H * (0.5 + Math.random() * 0.38); p.r = 1.4 + Math.random(); p.vy = 0; p.sway = 14; p.vx = (Math.random() - 0.5) * 10; }
+      return p;
+    }
+    function seedParticles() {
+      var n = { winter: Math.round(Math.min(110, W / 6)), fall: Math.round(Math.min(22, W / 40)),
+                spring: Math.round(Math.min(18, W / 45)), summer: 26 }[season];
+      particles = [];
+      for (var i = 0; i < n; i++) particles.push(makeParticle(true));
+    }
+    function drawSeason(t, dt) {
+      var el = sun ? sun.elevation : 30;
+      var dim = el < -6 ? 0.55 : 1;                                     // things are darker at night
+      if (season === 'summer' && el > 3) return;                        // fireflies only come out at dusk
+      ctx.save();
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        if (season === 'summer') {
+          p.x += (p.vx + Math.sin(t * 0.7 + p.ph) * 8) * dt;
+          p.y += Math.cos(t * 0.5 + p.ph) * 6 * dt;
+          if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+          var glow = Math.max(0, Math.sin(t * 1.3 + p.ph * 3));
+          glow = glow * glow * glow;
+          if (glow < 0.02) continue;
+          ctx.fillStyle = 'rgba(214,255,120,' + (0.25 * glow).toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 5, 0, 6.2832); ctx.fill();
+          ctx.fillStyle = 'rgba(240,255,170,' + glow.toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
+          continue;
+        }
+        p.y += p.vy * dt;
+        p.rot += p.spin * dt;
+        var x = p.x + Math.sin(t * 0.9 + p.ph) * p.sway;
+        if (p.y > H + 20) { particles[i] = makeParticle(false); continue; }
+        if (season === 'winter') {
+          ctx.fillStyle = 'rgba(255,255,255,' + (0.85 * dim).toFixed(2) + ')';
+          ctx.beginPath(); ctx.arc(x, p.y, p.r, 0, 6.2832); ctx.fill();
+        } else {
+          ctx.globalAlpha = 0.92 * dim;
+          ctx.fillStyle = p.c;
+          ctx.translate(x, p.y); ctx.rotate(p.rot);
+          ctx.scale(1, 0.55 + 0.45 * Math.abs(Math.sin(t * 2 + p.ph)));  // tumbling
+          ctx.beginPath();
+          if (season === 'fall') {                                      // a pointed leaf with a stem
+            ctx.moveTo(-p.r, 0);
+            ctx.quadraticCurveTo(0, -p.r * 0.9, p.r, 0);
+            ctx.quadraticCurveTo(0, p.r * 0.9, -p.r, 0);
+            ctx.fill();
+            ctx.strokeStyle = p.c; ctx.lineWidth = 0.8;
+            ctx.beginPath(); ctx.moveTo(-p.r, 0); ctx.lineTo(-p.r * 1.5, 0); ctx.stroke();
+          } else {
+            ctx.ellipse(0, 0, p.r, p.r * 0.65, 0, 0, 6.2832);
+            ctx.fill();
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          ctx.globalAlpha = 1;
+        }
+      }
+      ctx.restore();
+    }
 
     function hillY(x, layer) {
       var base = H * (0.70 + layer * 0.075), amp = H * (0.035 - layer * 0.006);
@@ -112,6 +244,8 @@
       var hillDark = mix([4, 14, 16], [10, 52, 44], light);
       for (var layer = 0; layer < 3; layer++) {
         var c = mix(cols[2], hillDark, 0.5 + layer * 0.25);
+        if (season === 'winter') c = mix(c, mix([70, 80, 100], [214, 224, 236], light), 0.55 - layer * 0.08); // snow on the hills
+        else if (season === 'fall') c = mix(c, mix([40, 22, 10], [128, 72, 30], light), 0.3);              // turning trees
         bctx.fillStyle = css(c);
         bctx.beginPath();
         bctx.moveTo(0, H);
@@ -137,12 +271,16 @@
       bctx.fillRect(0, 0, W, H);
 
       var chip = $('sky-phase');
-      if (chip) chip.textContent = 'Over the bench right now: ' + phaseName(sun);
+      if (chip) chip.textContent = 'Over the bench right now: ' + phaseName(sun) + ' · ' + SEASON_NAMES[season];
     }
 
     function frame(now) {
       var t = (now - start) / 1000;
+      var dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
       ctx.drawImage(back, 0, 0, W, H);
+      if (newStar && bornT < 0 && $('salute').hidden) bornT = t;        // your new star appears once you are back
+      drawVisitorStars(t);
+      drawSeason(t, dt);
       var a = t * 0.2 + 2.4;                                            // one slow circle every half minute
       var sa = Math.sin(a), ca = Math.cos(a);
       var cycle = t % 16;                                              // mostly soaring; now and then a few deep wingbeats
@@ -181,6 +319,7 @@
       canvas.width = back.width = W * dpr; canvas.height = back.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       paintBackdrop();
+      seedParticles();
       frame(performance.now());
     }
 
@@ -244,6 +383,7 @@
     var last = lastVisit ? ago(lastVisit) : '';
     $('tally-last').textContent = last ? 'Last visitor: ' + last : '';
     $('tally').hidden = false;
+    if (window.BigRSky) window.BigRSky.setVisitors(count);
     var chip = $('visit-chip');
     chip.textContent = count.toLocaleString() + (count === 1 ? ' visitor so far' : ' visitors so far');
     chip.classList.remove('pending');                                  // its space was saved from the start, so nothing moves
@@ -295,6 +435,7 @@
     post({ action: 'visit' }).then(function (res) {
       if (!res || !res.ok) throw new Error('visit failed');
       store('bigr-visit', { day: today(), number: res.count });
+      if (window.BigRSky) window.BigRSky.addMine(res.count);
       showCount(res.count, new Date().toISOString());
       markSigned(res.count);
       salute(res.count);
