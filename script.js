@@ -416,7 +416,7 @@
     $('gallery-section').hidden = false;
   }
 
-  $('share-button').addEventListener('click', function () {
+  if ($('share-button')) $('share-button').addEventListener('click', function () {
     var url = location.origin + location.pathname, status = $('share-status');
     var data = { title: 'Big R’s bench', text: 'I just met Ryan “Big R” Thomas.', url: url };
     if (navigator.share) {
